@@ -6,12 +6,14 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import * as ts from 'typescript';
+
 import {Decorator} from '../../ngtsc/host';
 import {DecoratorHandler} from '../../ngtsc/transform';
 import {AnalyzedFile, Analyzer} from '../src/analyzer';
 import {Esm2015ReflectionHost} from '../src/host/esm2015_host';
 import {ParsedClass} from '../src/parsing/parsed_class';
 import {ParsedFile} from '../src/parsing/parsed_file';
+
 import {getDeclaration, makeProgram} from './helpers/utils';
 
 const TEST_PROGRAM = {
@@ -28,14 +30,14 @@ const TEST_PROGRAM = {
 };
 
 function createTestHandler() {
-  const handler = jasmine.createSpyObj<DecoratorHandler<any>>('TestDecoratorHandler', [
+  const handler = jasmine.createSpyObj<DecoratorHandler<any, any>>('TestDecoratorHandler', [
     'detect',
     'analyze',
     'compile',
   ]);
   // Only detect the Component decorator
   handler.detect.and.callFake(
-      (decorators: Decorator[]) => decorators.find(d => d.name === 'Component'));
+      (node: any, decorators: Decorator[]) => decorators.find(d => d.name === 'Component'));
   // The "test" analysis is just the name of the decorator being analyzed
   handler.analyze.and.callFake(
       ((decl: ts.Declaration, dec: Decorator) => ({analysis: dec.name, diagnostics: null})));
@@ -69,7 +71,7 @@ function createParsedFile(program: ts.Program) {
 describe('Analyzer', () => {
   describe('analyzeFile()', () => {
     let program: ts.Program;
-    let testHandler: jasmine.SpyObj<DecoratorHandler<any>>;
+    let testHandler: jasmine.SpyObj<DecoratorHandler<any, any>>;
     let result: AnalyzedFile;
 
     beforeEach(() => {
@@ -87,9 +89,9 @@ describe('Analyzer', () => {
 
     it('should call detect on the decorator handlers with each class from the parsed file', () => {
       expect(testHandler.detect).toHaveBeenCalledTimes(2);
-      expect(testHandler.detect.calls.allArgs()[0][0]).toEqual([jasmine.objectContaining(
+      expect(testHandler.detect.calls.allArgs()[0][1]).toEqual([jasmine.objectContaining(
           {name: 'Component'})]);
-      expect(testHandler.detect.calls.allArgs()[1][0]).toEqual([jasmine.objectContaining(
+      expect(testHandler.detect.calls.allArgs()[1][1]).toEqual([jasmine.objectContaining(
           {name: 'Injectable'})]);
     });
 

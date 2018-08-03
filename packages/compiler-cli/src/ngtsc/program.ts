@@ -13,6 +13,7 @@ import * as ts from 'typescript';
 import * as api from '../transformers/api';
 
 import {ComponentDecoratorHandler, DirectiveDecoratorHandler, InjectableDecoratorHandler, NgModuleDecoratorHandler, PipeDecoratorHandler, ResourceLoader, SelectorScopeRegistry} from './annotations';
+import {BaseRefDecoratorHandler} from './annotations/src/property';
 import {TypeScriptReflectionHost} from './metadata';
 import {FileResourceLoader, HostResourceLoader} from './resource_loader';
 import {IvyCompilation, ivyTransformFactory} from './transform';
@@ -145,6 +146,7 @@ export class NgtscProgram implements api.Program {
 
     // Set up the IvyCompilation, which manages state for the Ivy transformer.
     const handlers = [
+      new BaseRefDecoratorHandler(checker, this.reflector),
       new ComponentDecoratorHandler(
           checker, this.reflector, scopeRegistry, this.isCore, this.resourceLoader),
       new DirectiveDecoratorHandler(checker, this.reflector, scopeRegistry, this.isCore),

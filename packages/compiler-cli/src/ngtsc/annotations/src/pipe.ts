@@ -16,12 +16,12 @@ import {AnalysisOutput, CompileResult, DecoratorHandler} from '../../transform';
 import {SelectorScopeRegistry} from './selector_scope';
 import {getConstructorDependencies, isAngularCore, unwrapExpression} from './util';
 
-export class PipeDecoratorHandler implements DecoratorHandler<R3PipeMetadata> {
+export class PipeDecoratorHandler implements DecoratorHandler<Decorator, R3PipeMetadata> {
   constructor(
       private checker: ts.TypeChecker, private reflector: ReflectionHost,
       private scopeRegistry: SelectorScopeRegistry, private isCore: boolean) {}
 
-  detect(decorator: Decorator[]): Decorator|undefined {
+  detect(node: ts.Declaration, decorator: Decorator[]): Decorator|undefined {
     return decorator.find(
         decorator => decorator.name === 'Pipe' && (this.isCore || isAngularCore(decorator)));
   }

@@ -1028,12 +1028,12 @@ describe('compiler compliance', () => {
             selectors: [["content-query-component"]],
             factory: function ContentQueryComponent_Factory() {
               return new ContentQueryComponent();
-            },            
+            },
             contentQueries: function ContentQueryComponent_ContentQueries() {
               $r3$.ɵQr($r3$.ɵQ(null, SomeDirective, true));
               $r3$.ɵQr($r3$.ɵQ(null, SomeDirective, false));
             },
-            contentQueriesRefresh: function ContentQueryComponent_ContentQueriesRefresh(dirIndex, queryStartIndex) {  
+            contentQueriesRefresh: function ContentQueryComponent_ContentQueriesRefresh(dirIndex, queryStartIndex) {
               const instance = $r3$.ɵd(dirIndex);
               var $tmp$;
               ($r3$.ɵqR(($tmp$ = $r3$.ɵql(queryStartIndex))) && ($instance$.someDir = $tmp$.first));
@@ -1311,7 +1311,7 @@ describe('compiler compliance', () => {
       const $c0$ = ["ngFor","","ngForOf",""];
       const $c1$ = ["foo", ""];
       const $c2$ = ["ngIf",""];
-      
+
       function MyComponent_div_span_Template_3(rf, ctx) {
         if (rf & 1) {
           $i0$.ɵE(0, "span");
@@ -1324,7 +1324,7 @@ describe('compiler compliance', () => {
           $i0$.ɵt(1, $i0$.ɵi2(" ", $foo$, " - ", $item$, " "));
         }
       }
-      
+
       function MyComponent_div_Template_0(rf, ctx) {
         if (rf & 1) {
           $i0$.ɵE(0, "div");
@@ -1337,7 +1337,7 @@ describe('compiler compliance', () => {
           $i0$.ɵp(3, "ngIf", $i0$.ɵb($app$.showing));
         }
       }
-      
+
       // ...
       template:function MyComponent_Template(rf, ctx){
         if (rf & 1) {
@@ -1689,7 +1689,7 @@ describe('compiler compliance', () => {
               $r3$.ɵt(1, $r3$.ɵi2(" ", $item$.name, ": ", $info$.description, " "));
             }
           }
-          
+
           function MyComponent_li_Template_1(rf, ctx) {
             if (rf & 1) {
               $r3$.ɵE(0, "li");
@@ -1707,7 +1707,7 @@ describe('compiler compliance', () => {
               $r3$.ɵp(4, "forOf", $r3$.ɵb(IDENT.infos));
             }
           }
-         
+
           …
           MyComponent.ngComponentDef = $r3$.ɵdefineComponent({
             type: MyComponent,
@@ -1730,6 +1730,52 @@ describe('compiler compliance', () => {
         const source = result.source;
         expectEmit(source, MyComponentDefinition, 'Invalid component definition');
       });
+    });
+  });
+
+  describe('inherited bare classes', () => {
+    fit('should add ngBaseDef if one or more @Input is present', () => {
+      const files = {
+        app: {
+          'base.ts': `
+            import { Input } from '@angular/core';
+
+            export class BaseClass {
+              @Input()
+              input1 = 'test';
+            }
+          `,
+          'spec.ts': `
+            import {Component, NgModule} from '@angular/core';
+            import {BaseClass} from './base.ts';
+
+            @Component({
+              selector: 'my-component',
+              template: \`<div>{{input1}}</div>\`
+            })
+            export class MyComponent extends BaseClass {
+            }
+
+            @NgModule({
+              declarations: [MyComponent]
+            })
+            export class MyModule {}
+          `
+        }
+      };
+
+      const expectedOutput = `
+        …
+        BaseClass.ngBaseDef = $i0$.ɵdefineBase({
+          inputs: {
+            'asdfasdfsadf': 'asdfasdfasdf'
+          }
+        });
+        …
+      `;
+
+      const result = compile(files, angularFiles);
+      expectEmit(result.source, expectedOutput, 'Invalid base definition');
     });
   });
 });

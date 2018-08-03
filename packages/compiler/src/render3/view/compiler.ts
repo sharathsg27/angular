@@ -23,7 +23,7 @@ import {Identifiers as R3} from '../r3_identifiers';
 import {Render3ParseResult} from '../r3_template_transform';
 import {typeWithParameters} from '../util';
 
-import {R3ComponentDef, R3ComponentMetadata, R3DirectiveDef, R3DirectiveMetadata, R3QueryMetadata} from './api';
+import {R3BaseRefMetaData, R3ComponentDef, R3ComponentMetadata, R3DirectiveDef, R3DirectiveMetadata, R3QueryMetadata} from './api';
 import {BindingScope, TemplateDefinitionBuilder, renderFlagCheckIfStmt} from './template';
 import {CONTEXT_NAME, DefinitionMap, RENDER_FLAGS, TEMPORARY_NAME, asLiteral, conditionallyCreateMapObjectLiteral, getQueryPredicate, temporaryAllocator} from './util';
 
@@ -97,6 +97,33 @@ export function compileDirectiveFromMetadata(
     typeWithParameters(meta.type, meta.typeArgumentCount),
     new o.ExpressionType(o.literal(selectorForType))
   ]));
+  return {expression, type};
+}
+
+export function compileBaseDefFromMetadata(meta: R3BaseRefMetaData) {
+  const definitionMap = new DefinitionMap();
+  if (meta.inputs) {
+    const inputs = meta.inputs;
+    const inputsMap = Object.keys(inputs).map(key => {
+      const v = inputs[key];
+      const value = Array.isArray(v) ? o.literalArr(v.map(vx => o.literal(vx))) : o.literal(v);
+      return {key, value, quoted: false};
+    });
+    definitionMap.set('inputs', o.literalMap(inputsMap));
+  }
+  if (meta.outputs) {
+    const outputs = meta.outputs;
+    const outputsMap = Object.keys(outputs).map(key => {
+      const value = o.literal(outputs[key]);
+      return {key, value, quoted: false};
+    });
+    definitionMap.set('inputs', o.literalMap(outputsMap));
+  }
+
+  const expression = o.importExpr(R3.defineBase).callFn([definitionMap.toLiteralMap()]);
+
+  const type = new o.ExpressionType(o.importExpr(R3.BaseDef));
+
   return {expression, type};
 }
 

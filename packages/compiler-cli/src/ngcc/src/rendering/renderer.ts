@@ -219,16 +219,24 @@ export function renderDefinitions(
     sourceFile: ts.SourceFile, analyzedClass: AnalyzedClass, imports: ImportManager): string {
   const printer = ts.createPrinter();
   const name = (analyzedClass.declaration as ts.NamedDeclaration).name !;
+
+  console.log('HERHERHERHERHEERHERHERHEERHEREHERHEREH');
+
   const definitions =
-      analyzedClass.compilation
+      analyzedClass.analyses
           .map(
-              c => c.statements.map(statement => translateStatement(statement, imports))
-                       .concat(translateStatement(
-                           createAssignmentStatement(name, c.name, c.initializer), imports))
-                       .map(
-                           statement =>
-                               printer.printNode(ts.EmitHint.Unspecified, statement, sourceFile))
-                       .join('\n'))
+              ({compilation}) =>
+                  compilation
+                      .map(
+                          c => c.statements.map(statement => translateStatement(statement, imports))
+                                   .concat(translateStatement(
+                                       createAssignmentStatement(name, c.name, c.initializer),
+                                       imports))
+                                   .map(
+                                       statement => printer.printNode(
+                                           ts.EmitHint.Unspecified, statement, sourceFile))
+                                   .join('\n'))
+                      .join('\n'))
           .join('\n');
   return definitions;
 }

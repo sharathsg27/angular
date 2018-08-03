@@ -113,6 +113,13 @@ export class Identifiers {
 
   static defineComponent: o.ExternalReference = {name: 'ɵdefineComponent', moduleName: CORE};
 
+  static defineBase: o.ExternalReference = {name: 'ɵdefineBase', moduleName: CORE};
+
+  static BaseDef: o.ExternalReference = {
+    name: 'ɵBaseDef',
+    moduleName: CORE,
+  };
+
   static ComponentDef: o.ExternalReference = {
     name: 'ɵComponentDef',
     moduleName: CORE,

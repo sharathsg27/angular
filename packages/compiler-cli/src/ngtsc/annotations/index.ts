@@ -12,4 +12,5 @@ export {DirectiveDecoratorHandler} from './src/directive';
 export {InjectableDecoratorHandler} from './src/injectable';
 export {NgModuleDecoratorHandler} from './src/ng_module';
 export {PipeDecoratorHandler} from './src/pipe';
+export {BaseRefDecoratorHandler} from './src/property';
 export {CompilationScope, SelectorScopeRegistry} from './src/selector_scope';

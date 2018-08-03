@@ -186,3 +186,12 @@ export interface R3ComponentDef {
   expression: o.Expression;
   type: o.Type;
 }
+
+/**
+ * Information needed to build a BaseDef from Input and Output MetaData
+ */
+export interface R3BaseRefMetaData {
+  inputs?: {[key: string]: string | [string, string]};
+  outputs?: {[key: string]: string};
+  isBaseDef: true;
+}

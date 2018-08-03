@@ -18,12 +18,12 @@ import {getConstructorDependencies, isAngularCore, unwrapExpression, unwrapForwa
 
 const EMPTY_OBJECT: {[key: string]: string} = {};
 
-export class DirectiveDecoratorHandler implements DecoratorHandler<R3DirectiveMetadata> {
+export class DirectiveDecoratorHandler implements DecoratorHandler<Decorator, R3DirectiveMetadata> {
   constructor(
       private checker: ts.TypeChecker, private reflector: ReflectionHost,
       private scopeRegistry: SelectorScopeRegistry, private isCore: boolean) {}
 
-  detect(decorators: Decorator[]): Decorator|undefined {
+  detect(node: ts.Declaration, decorators: Decorator[]): Decorator|undefined {
     return decorators.find(
         decorator => decorator.name === 'Directive' && (this.isCore || isAngularCore(decorator)));
   }

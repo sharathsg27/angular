@@ -19,12 +19,12 @@ import {Decorator} from '../../host';
  * responsible for extracting the information required to perform compilation from the decorators
  * and Typescript source, invoking the decorator compiler, and returning the result.
  */
-export interface DecoratorHandler<A> {
+export interface DecoratorHandler<D, A> {
   /**
    * Scan a set of reflected decorators and determine if this handler is responsible for compilation
    * of one of them.
    */
-  detect(decorator: Decorator[]): Decorator|undefined;
+  detect(node: ts.Declaration, decorator: Decorator[]): D|undefined;
 
 
   /**
@@ -40,7 +40,7 @@ export interface DecoratorHandler<A> {
    * if successful, or an array of diagnostic messages if the analysis fails or the decorator
    * isn't valid.
    */
-  analyze(node: ts.Declaration, decorator: Decorator): AnalysisOutput<A>;
+  analyze(node: ts.Declaration, detectionData: D): AnalysisOutput<A>;
 
   /**
    * Generate a description of the field which should be added to the class, including any

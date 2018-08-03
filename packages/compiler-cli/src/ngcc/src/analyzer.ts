@@ -7,19 +7,25 @@
  */
 import * as fs from 'fs';
 import * as ts from 'typescript';
-import {ComponentDecoratorHandler, DirectiveDecoratorHandler, InjectableDecoratorHandler, NgModuleDecoratorHandler, PipeDecoratorHandler, ResourceLoader, SelectorScopeRegistry} from '../../ngtsc/annotations';
+
+import {BaseRefDecoratorHandler, ComponentDecoratorHandler, DirectiveDecoratorHandler, InjectableDecoratorHandler, NgModuleDecoratorHandler, PipeDecoratorHandler, ResourceLoader, SelectorScopeRegistry} from '../../ngtsc/annotations';
 import {Decorator} from '../../ngtsc/host';
 import {CompileResult, DecoratorHandler} from '../../ngtsc/transform';
+
 import {NgccReflectionHost} from './host/ngcc_host';
 import {ParsedClass} from './parsing/parsed_class';
 import {ParsedFile} from './parsing/parsed_file';
 import {isDefined} from './utils';
 
-export interface AnalyzedClass<T = any> extends ParsedClass {
-  handler: DecoratorHandler<T>;
+export interface AnalyzedClassEntry<D = any, T = any> {
+  handler: DecoratorHandler<D, T>;
   analysis: any;
   diagnostics?: ts.Diagnostic[];
   compilation: CompileResult[];
+}
+
+export interface AnalyzedClass<D = any, T = any> extends ParsedClass {
+  analyses: Array<AnalyzedClassEntry<D, T>>;
 }
 
 export interface AnalyzedFile {
@@ -27,9 +33,9 @@ export interface AnalyzedFile {
   sourceFile: ts.SourceFile;
 }
 
-export interface MatchingHandler<T> {
-  handler: DecoratorHandler<T>;
-  decorator: Decorator;
+export interface MatchingHandler<D, T> {
+  handler: DecoratorHandler<D, T>;
+  detected: D;
 }
 
 /**
@@ -42,7 +48,8 @@ export class FileResourceLoader implements ResourceLoader {
 export class Analyzer {
   resourceLoader = new FileResourceLoader();
   scopeRegistry = new SelectorScopeRegistry(this.typeChecker, this.host);
-  handlers: DecoratorHandler<any>[] = [
+  handlers: DecoratorHandler<any, any>[] = [
+    new BaseRefDecoratorHandler(this.typeChecker, this.host),
     new ComponentDecoratorHandler(
         this.typeChecker, this.host, this.scopeRegistry, false, this.resourceLoader),
     new DirectiveDecoratorHandler(this.typeChecker, this.host, this.scopeRegistry, false),
@@ -71,27 +78,38 @@ export class Analyzer {
 
   protected analyzeClass(file: ts.SourceFile, clazz: ParsedClass): AnalyzedClass|undefined {
     const matchingHandlers =
-        this.handlers.map(handler => ({handler, decorator: handler.detect(clazz.decorators)}))
+        this.handlers
+            .map(
+                handler =>
+                    ({handler, detected: handler.detect(clazz.declaration, clazz.decorators)}))
             .filter(isMatchingHandler);
 
-    if (matchingHandlers.length > 1) {
+    if (matchingHandlers.length > 1 && matchingHandlers.every(isNotBaseRefHandlerMatch)) {
       throw new Error('TODO.Diagnostic: Class has multiple Angular decorators.');
     }
 
-    if (matchingHandlers.length == 0) {
+    if (matchingHandlers.length === 0) {
       return undefined;
     }
 
-    const {handler, decorator} = matchingHandlers[0];
-    const {analysis, diagnostics} = handler.analyze(clazz.declaration, decorator);
-    let compilation = handler.compile(clazz.declaration, analysis);
-    if (!Array.isArray(compilation)) {
-      compilation = [compilation];
-    }
-    return {...clazz, handler, analysis, diagnostics, compilation};
+    const analyses = matchingHandlers.map(({handler, detected}) => {
+      const {analysis, diagnostics} = handler.analyze(clazz.declaration, detected);
+      let compilation = handler.compile(clazz.declaration, analysis);
+      if (!Array.isArray(compilation)) {
+        compilation = [compilation];
+      }
+      return {handler, analysis, diagnostics, compilation};
+    });
+
+    return {...clazz, analyses};
   }
 }
 
-function isMatchingHandler<T>(handler: Partial<MatchingHandler<T>>): handler is MatchingHandler<T> {
-  return !!handler.decorator;
+function isNotBaseRefHandlerMatch<D, T>(handler: Partial<MatchingHandler<D, T>>) {
+  return !(handler.handler instanceof BaseRefDecoratorHandler);
+}
+
+function isMatchingHandler<D, T>(handler: Partial<MatchingHandler<D, T>>):
+    handler is MatchingHandler<D, T> {
+  return !!handler.detected;
 }

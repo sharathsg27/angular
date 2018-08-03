@@ -14,12 +14,14 @@ import {reflectNameOfDeclaration} from '../../metadata/src/reflector';
 import {AnalysisOutput, CompileResult, DecoratorHandler} from './api';
 import {DtsFileTransformer} from './declaration';
 
+
+
 /**
  * Record of an adapter which decided to emit a static field, and the analysis it performed to
  * prepare for that operation.
  */
-interface EmitFieldOperation<T> {
-  adapter: DecoratorHandler<T>;
+interface EmitFieldOperation<D, T> {
+  adapter: DecoratorHandler<D, T>;
   analysis: AnalysisOutput<T>;
   decorator: Decorator;
 }
@@ -35,7 +37,7 @@ export class IvyCompilation {
    * Tracks classes which have been analyzed and found to have an Ivy decorator, and the
    * information recorded about them for later compilation.
    */
-  private analysis = new Map<ts.Declaration, EmitFieldOperation<any>>();
+  private analysis: Array<{node: ts.Declaration, emit: EmitFieldOperation<any, any>}> = [];
 
   /**
    * Tracks the `DtsFileTransformer`s for each TS file that needs .d.ts transformations.
@@ -54,7 +56,7 @@ export class IvyCompilation {
    * `null` in most cases.
    */
   constructor(
-      private handlers: DecoratorHandler<any>[], private checker: ts.TypeChecker,
+      private handlers: DecoratorHandler<any, any>[], private checker: ts.TypeChecker,
       private reflector: ReflectionHost, private coreImportsFrom: ts.SourceFile|null) {}
 
 
@@ -79,7 +81,7 @@ export class IvyCompilation {
       // Look through the DecoratorHandlers to see if any are relevant.
       this.handlers.forEach(adapter => {
         // An adapter is relevant if it matches one of the decorators on the class.
-        const decorator = adapter.detect(decorators);
+        const decorator = adapter.detect(node, decorators);
         if (decorator === undefined) {
           return;
         }
@@ -87,7 +89,9 @@ export class IvyCompilation {
         const completeAnalysis = () => {
           // Check for multiple decorators on the same node. Technically speaking this
           // could be supported, but right now it's an error.
-          if (this.analysis.has(node)) {
+          if (this.analysis.find(
+                  entry => entry.node === node && entry.emit.analysis &&
+                      entry.emit.analysis.analysis && entry.emit.analysis.analysis.isBaseDef)) {
             throw new Error('TODO.Diagnostic: Class has multiple Angular decorators.');
           }
 
@@ -96,9 +100,12 @@ export class IvyCompilation {
           const analysis = adapter.analyze(node, decorator);
 
           if (analysis.analysis !== undefined) {
-            this.analysis.set(node, {
-              adapter,
-              analysis: analysis.analysis, decorator,
+            this.analysis.push({
+              node,
+              emit: {
+                adapter,
+                analysis: analysis.analysis, decorator,
+              }
             });
           }
 
@@ -144,10 +151,11 @@ export class IvyCompilation {
   compileIvyFieldFor(node: ts.Declaration): CompileResult[]|undefined {
     // Look to see whether the original node was analyzed. If not, there's nothing to do.
     const original = ts.getOriginalNode(node) as ts.Declaration;
-    if (!this.analysis.has(original)) {
+    const entry = this.analysis.find(entry => entry.node === original);
+    if (!entry) {
       return undefined;
     }
-    const op = this.analysis.get(original) !;
+    const op = entry.emit;
 
     // Run the actual compilation, which generates an Expression for the Ivy field.
     let res: CompileResult|CompileResult[] = op.adapter.compile(node, op.analysis);
@@ -170,11 +178,8 @@ export class IvyCompilation {
    */
   ivyDecoratorFor(node: ts.Declaration): Decorator|undefined {
     const original = ts.getOriginalNode(node) as ts.Declaration;
-    if (!this.analysis.has(original)) {
-      return undefined;
-    }
-
-    return this.analysis.get(original) !.decorator;
+    const entry = this.analysis.find(entry => entry.node === original);
+    return entry ? entry.emit.decorator : undefined;
   }
 
   /**
