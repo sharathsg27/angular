@@ -84,9 +84,6 @@
     "name": "NO_PARENT_INJECTOR"
   },
   {
-    "name": "NgOnChangesFeature"
-  },
-  {
     "name": "NodeInjectorFactory"
   },
   {
@@ -97,9 +94,6 @@
   },
   {
     "name": "PARENT_INJECTOR"
-  },
-  {
-    "name": "PRIVATE_PREFIX"
   },
   {
     "name": "RENDERER"
@@ -114,9 +108,6 @@
     "name": "SANITIZER"
   },
   {
-    "name": "SimpleChange"
-  },
-  {
     "name": "TVIEW"
   },
   {
@@ -127,6 +118,9 @@
   },
   {
     "name": "ViewEncapsulation"
+  },
+  {
+    "name": "__read"
   },
   {
     "name": "__self"
@@ -363,7 +357,7 @@
     "name": "locateHostElement"
   },
   {
-    "name": "namespaceHTML"
+    "name": "namespaceHTML$$1"
   },
   {
     "name": "nativeInsertBefore"
@@ -376,9 +370,6 @@
   },
   {
     "name": "noSideEffects"
-  },
-  {
-    "name": "onChangesWrapper"
   },
   {
     "name": "postProcessBaseDirective"
@@ -456,7 +447,7 @@
     "name": "syncViewWithBlueprint"
   },
   {
-    "name": "text"
+    "name": "text$$1"
   },
   {
     "name": "tickRootContext"
@@ -466,5 +457,8 @@
   },
   {
     "name": "viewAttached"
+  },
+  {
+    "name": "wrapOnChanges"
   }
 ]

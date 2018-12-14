@@ -234,7 +234,7 @@ export function LifecycleHooksFeature(component: any, def: ComponentDef<any>): v
   const rootTView = readPatchedLView(component) ![TVIEW];
   const dirIndex = rootTView.data.length - 1;
 
-  queueInitHooks(dirIndex, def.onInit, def.doCheck, rootTView);
+  queueInitHooks(dirIndex, def.onChanges, def.onInit, def.doCheck, rootTView);
   queueLifecycleHooks(dirIndex << TNodeFlags.DirectiveStartingIndexShift | 1, rootTView);
 }
 

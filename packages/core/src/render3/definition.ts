@@ -18,6 +18,7 @@ import {noSideEffects} from '../util';
 import {NG_COMPONENT_DEF, NG_DIRECTIVE_DEF, NG_MODULE_DEF, NG_PIPE_DEF} from './fields';
 import {BaseDef, ComponentDef, ComponentDefFeature, ComponentQuery, ComponentTemplate, ComponentType, DirectiveDef, DirectiveDefFeature, DirectiveType, DirectiveTypesOrFactory, HostBindingsFunction, PipeDef, PipeType, PipeTypesOrFactory} from './interfaces/definition';
 import {CssSelectorList, SelectorFlags} from './interfaces/projection';
+import { SimpleChanges } from '../core';
 
 export const EMPTY: {} = {};
 export const EMPTY_ARRAY: any[] = [];
@@ -202,7 +203,7 @@ export function defineComponent<T>(componentDefinition: {
   /**
    * A list of optional features to apply.
    *
-   * See: {@link NgOnChangesFeature}, {@link ProvidersFeature}
+   * See: {@link ProvidersFeature}
    */
   features?: ComponentDefFeature[];
 
@@ -264,6 +265,7 @@ export function defineComponent<T>(componentDefinition: {
     inputs: null !,   // assigned in noSideEffects
     outputs: null !,  // assigned in noSideEffects
     exportAs: componentDefinition.exportAs || null,
+    onChanges: wrapOnChanges(typePrototype.ngOnChanges),
     onInit: typePrototype.ngOnInit || null,
     doCheck: typePrototype.ngDoCheck || null,
     afterContentInit: typePrototype.ngAfterContentInit || null,
@@ -303,6 +305,27 @@ export function defineComponent<T>(componentDefinition: {
   }) as never;
   return def as never;
 }
+
+/**
+ * Wraps an `ngOnChanges` function such that when it's executed in hooks, it's called
+ * in such a way it can look up the `SimpleChanges` object that is stored next to the
+ * directive instance in LView, and pass it to the function, as well as call the function
+ * with the appropriate instance in `this`.
+ *
+ * NOTE: `SimpleChanges` is set during property input binding in `setInputsForProperty`
+ * in `instructions.ts`.
+ *
+ * @param ngOnChanges the ngOnChanges implementation to wrap
+ */
+function wrapOnChanges(ngOnChanges: ((changes: SimpleChanges) => void)|undefined|null) {
+  if (!ngOnChanges) return null;
+  return function (this: [any, SimpleChanges|null]) {
+    const [ instance, changes ] = this;
+    ngOnChanges.call(instance, changes);
+    this[1] = null;
+  }
+}
+
 
 export function extractDirectiveDef(type: DirectiveType<any>& ComponentType<any>):
     DirectiveDef<any>|ComponentDef<any> {
@@ -573,7 +596,7 @@ export const defineDirective = defineComponent as any as<T>(directiveDefinition:
   /**
    * A list of optional features to apply.
    *
-   * See: {@link NgOnChangesFeature}, {@link ProvidersFeature}, {@link InheritDefinitionFeature}
+   * See: {@link ProvidersFeature}, {@link InheritDefinitionFeature}
    */
   features?: DirectiveDefFeature[];
 

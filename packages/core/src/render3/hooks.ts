@@ -10,6 +10,7 @@ import {assertEqual} from './assert';
 import {DirectiveDef} from './interfaces/definition';
 import {TNodeFlags} from './interfaces/node';
 import {FLAGS, HookData, LView, LViewFlags, TView} from './interfaces/view';
+import { SimpleChanges } from '../core';
 
 
 /**
@@ -25,9 +26,14 @@ import {FLAGS, HookData, LView, LViewFlags, TView} from './interfaces/view';
  * @param tView The current TView
  */
 export function queueInitHooks(
-    index: number, onInit: (() => void) | null, doCheck: (() => void) | null, tView: TView): void {
+    index: number, onChanges: (() => void) | null, onInit: (() => void) | null, doCheck: (() => void) | null, tView: TView): void {
   ngDevMode &&
       assertEqual(tView.firstTemplatePass, true, 'Should only be called on first template pass');
+
+  if (onChanges) {
+    (tView.initHooks || (tView.initHooks = [])).push(index, onChanges);
+  }
+
   if (onInit) {
     (tView.initHooks || (tView.initHooks = [])).push(index, onInit);
   }

@@ -7,7 +7,7 @@
  */
 
 import {ComponentFactoryResolver, OnDestroy, SimpleChanges, ViewContainerRef} from '../../src/core';
-import {AttributeMarker, ComponentTemplate, LifecycleHooksFeature, NO_CHANGE, NgOnChangesFeature, defineComponent, defineDirective, injectComponentFactoryResolver} from '../../src/render3/index';
+import {AttributeMarker, ComponentTemplate, LifecycleHooksFeature, NO_CHANGE, defineComponent, defineDirective, injectComponentFactoryResolver} from '../../src/render3/index';
 
 import {bind, container, containerRefreshEnd, containerRefreshStart, directiveInject, element, elementEnd, elementProperty, elementStart, embeddedViewEnd, embeddedViewStart, listener, markDirty, projection, projectionDef, store, template, text} from '../../src/render3/instructions';
 import {RenderFlags} from '../../src/render3/interfaces/definition';
@@ -1986,7 +1986,6 @@ describe('lifecycles', () => {
           type: Component,
           selectors: [[name]],
           factory: () => new Component(),
-          features: [NgOnChangesFeature],
           consts: consts,
           vars: vars,
           inputs: {a: 'val1', b: ['publicName', 'val2']}, template,
@@ -2009,7 +2008,6 @@ describe('lifecycles', () => {
         type: Directive,
         selectors: [['', 'dir', '']],
         factory: () => new Directive(),
-        features: [NgOnChangesFeature],
         inputs: {a: 'val1', b: ['publicName', 'val2']}
       });
     }
@@ -2394,7 +2392,6 @@ describe('lifecycles', () => {
           consts: consts,
           vars: vars,
           inputs: {val: 'val'}, template,
-          features: [NgOnChangesFeature],
           directives: directives
         });
       };

@@ -1603,7 +1603,7 @@ describe('ViewContainerRef', () => {
             textBinding(0, interpolation1('', cmp.name, ''));
           }
         },
-        features: [NgOnChangesFeature],
+
         inputs: {name: 'name'}
       });
     }

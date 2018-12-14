@@ -30,7 +30,6 @@ describe('NgOnChangesFeature', () => {
         type: MyDirective,
         selectors: [['', 'myDir', '']],
         factory: () => new MyDirective(),
-        features: [NgOnChangesFeature],
         inputs: {valA: 'valA', valB: 'valB'}
       });
     }
@@ -71,7 +70,7 @@ describe('NgOnChangesFeature', () => {
         type: SuperDirective,
         selectors: [['', 'superDir', '']],
         factory: () => new SuperDirective(),
-        features: [NgOnChangesFeature],
+
         inputs: {valA: 'valA', valB: 'valB'},
       });
     }
@@ -122,7 +121,7 @@ describe('NgOnChangesFeature', () => {
         type: SuperDirective,
         selectors: [['', 'superDir', '']],
         factory: () => new SuperDirective(),
-        features: [NgOnChangesFeature],
+
         inputs: {valA: 'valA'},
       });
     }
@@ -165,7 +164,7 @@ describe('NgOnChangesFeature', () => {
         type: SuperDirective,
         selectors: [['', 'superDir', '']],
         factory: () => new SuperDirective(),
-        features: [NgOnChangesFeature],
+
         inputs: {valA: 'valA'},
       });
     }
@@ -273,7 +272,7 @@ describe('NgOnChangesFeature', () => {
         type: MyDirective,
         selectors: [['', 'myDir', '']],
         factory: () => new MyDirective(),
-        features: [NgOnChangesFeature],
+
         inputs: {valA: 'valA', valB: 'valB'}
       });
     }
@@ -309,7 +308,7 @@ describe('NgOnChangesFeature', () => {
         type: MyDirective,
         selectors: [['', 'myDir', '']],
         factory: () => new MyDirective(),
-        features: [NgOnChangesFeature],
+
         inputs: {onlySetter: 'onlySetter'}
       });
     }

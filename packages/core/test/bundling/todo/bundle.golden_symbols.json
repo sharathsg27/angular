@@ -135,9 +135,6 @@
     "name": "NgModuleRef"
   },
   {
-    "name": "NgOnChangesFeature"
-  },
-  {
     "name": "NodeInjector$1"
   },
   {
@@ -160,9 +157,6 @@
   },
   {
     "name": "PARENT_INJECTOR"
-  },
-  {
-    "name": "PRIVATE_PREFIX"
   },
   {
     "name": "QUERIES"
@@ -396,7 +390,7 @@
     "name": "baseResolveDirective"
   },
   {
-    "name": "bind"
+    "name": "bind$$1"
   },
   {
     "name": "bindingUpdated"
@@ -537,7 +531,7 @@
     "name": "detachView"
   },
   {
-    "name": "detectChanges"
+    "name": "detectChanges$$1"
   },
   {
     "name": "detectChangesInternal"
@@ -546,31 +540,31 @@
     "name": "diPublicInInjector"
   },
   {
-    "name": "directiveInject"
+    "name": "directiveInject$$1"
   },
   {
     "name": "domRendererFactory3"
   },
   {
-    "name": "elementClassProp"
+    "name": "elementClassProp$$1"
   },
   {
     "name": "elementCreate"
   },
   {
-    "name": "elementEnd"
+    "name": "elementEnd$$1"
   },
   {
-    "name": "elementProperty"
+    "name": "elementProperty$$1"
   },
   {
-    "name": "elementStart"
+    "name": "elementStart$$1"
   },
   {
-    "name": "elementStyling"
+    "name": "elementStyling$$1"
   },
   {
-    "name": "elementStylingApply"
+    "name": "elementStylingApply$$1"
   },
   {
     "name": "enterView"
@@ -660,7 +654,7 @@
     "name": "getCreationMode"
   },
   {
-    "name": "getCurrentView"
+    "name": "getCurrentView$$1"
   },
   {
     "name": "getDirectiveDef"
@@ -870,7 +864,7 @@
     "name": "instantiateRootComponent"
   },
   {
-    "name": "interpolation1"
+    "name": "interpolation1$$1"
   },
   {
     "name": "invertObject"
@@ -939,7 +933,7 @@
     "name": "limitToSingleClasses"
   },
   {
-    "name": "listener"
+    "name": "listener$$1"
   },
   {
     "name": "loadInternal"
@@ -960,7 +954,7 @@
     "name": "makeParamDecorator"
   },
   {
-    "name": "markDirty"
+    "name": "markDirty$$1"
   },
   {
     "name": "markDirtyIfOnPush"
@@ -969,7 +963,7 @@
     "name": "markViewDirty"
   },
   {
-    "name": "namespaceHTML"
+    "name": "namespaceHTML$$1"
   },
   {
     "name": "nativeInsertBefore"
@@ -981,7 +975,7 @@
     "name": "nativeParentNode"
   },
   {
-    "name": "nextContext"
+    "name": "nextContext$$1"
   },
   {
     "name": "nextContextImpl"
@@ -991,9 +985,6 @@
   },
   {
     "name": "noSideEffects"
-  },
-  {
-    "name": "onChangesWrapper"
   },
   {
     "name": "pointers"
@@ -1038,7 +1029,7 @@
     "name": "readPatchedLView"
   },
   {
-    "name": "reference"
+    "name": "reference$$1"
   },
   {
     "name": "refreshChildComponents"
@@ -1182,13 +1173,13 @@
     "name": "syncViewWithBlueprint"
   },
   {
-    "name": "template"
+    "name": "template$$1"
   },
   {
-    "name": "text"
+    "name": "text$$1"
   },
   {
-    "name": "textBinding"
+    "name": "textBinding$$1"
   },
   {
     "name": "throwMultipleComponentError"
@@ -1222,5 +1213,8 @@
   },
   {
     "name": "wrapListenerWithPreventDefault"
+  },
+  {
+    "name": "wrapOnChanges"
   }
 ]

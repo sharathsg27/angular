@@ -594,9 +594,6 @@
     "name": "NgModuleRef$1"
   },
   {
-    "name": "NgOnChangesFeature"
-  },
-  {
     "name": "NgPlural"
   },
   {
@@ -697,9 +694,6 @@
   },
   {
     "name": "PLATFORM_SERVER_ID"
-  },
-  {
-    "name": "PRIVATE_PREFIX"
   },
   {
     "name": "PercentPipe"
@@ -1254,7 +1248,7 @@
     "name": "baseResolveDirective"
   },
   {
-    "name": "bind"
+    "name": "bind$$1"
   },
   {
     "name": "bindingUpdated"
@@ -1488,7 +1482,7 @@
     "name": "detachView"
   },
   {
-    "name": "detectChanges"
+    "name": "detectChanges$$1"
   },
   {
     "name": "detectChangesInRootView"
@@ -1503,7 +1497,7 @@
     "name": "diPublicInInjector"
   },
   {
-    "name": "directiveInject"
+    "name": "directiveInject$$1"
   },
   {
     "name": "discoverLocalRefs"
@@ -1512,25 +1506,25 @@
     "name": "domRendererFactory3"
   },
   {
-    "name": "elementClassProp"
+    "name": "elementClassProp$$1"
   },
   {
     "name": "elementCreate"
   },
   {
-    "name": "elementEnd"
+    "name": "elementEnd$$1"
   },
   {
-    "name": "elementProperty"
+    "name": "elementProperty$$1"
   },
   {
-    "name": "elementStart"
+    "name": "elementStart$$1"
   },
   {
-    "name": "elementStyling"
+    "name": "elementStyling$$1"
   },
   {
-    "name": "elementStylingApply"
+    "name": "elementStylingApply$$1"
   },
   {
     "name": "empty"
@@ -1710,7 +1704,7 @@
     "name": "getCurrencySymbol"
   },
   {
-    "name": "getCurrentView"
+    "name": "getCurrentView$$1"
   },
   {
     "name": "getDOM"
@@ -2052,7 +2046,7 @@
     "name": "injectArgs"
   },
   {
-    "name": "injectAttribute"
+    "name": "injectAttribute$$1"
   },
   {
     "name": "injectAttributeImpl"
@@ -2100,7 +2094,7 @@
     "name": "instantiateRootComponent"
   },
   {
-    "name": "interpolation1"
+    "name": "interpolation1$$1"
   },
   {
     "name": "invalidPipeArgumentError"
@@ -2253,7 +2247,7 @@
     "name": "limitToSingleClasses"
   },
   {
-    "name": "listener"
+    "name": "listener$$1"
   },
   {
     "name": "loadContext"
@@ -2313,7 +2307,7 @@
     "name": "multicast"
   },
   {
-    "name": "namespaceHTML"
+    "name": "namespaceHTML$$1"
   },
   {
     "name": "nativeInsertBefore"
@@ -2325,7 +2319,7 @@
     "name": "nativeParentNode"
   },
   {
-    "name": "nextContext"
+    "name": "nextContext$$1"
   },
   {
     "name": "nextContextImpl"
@@ -2353,9 +2347,6 @@
   },
   {
     "name": "observable"
-  },
-  {
-    "name": "onChangesWrapper"
   },
   {
     "name": "onEnter"
@@ -2451,7 +2442,7 @@
     "name": "refCount"
   },
   {
-    "name": "reference"
+    "name": "reference$$1"
   },
   {
     "name": "refreshChildComponents"
@@ -2676,13 +2667,13 @@
     "name": "tagSet"
   },
   {
-    "name": "template"
+    "name": "template$$1"
   },
   {
-    "name": "text"
+    "name": "text$$1"
   },
   {
-    "name": "textBinding"
+    "name": "textBinding$$1"
   },
   {
     "name": "throwMultipleComponentError"
@@ -2755,6 +2746,9 @@
   },
   {
     "name": "wrapListenerWithPreventDefault"
+  },
+  {
+    "name": "wrapOnChanges"
   },
   {
     "name": "wtfCreateScope"

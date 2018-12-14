@@ -43,6 +43,7 @@ import {BoundPlayerFactory} from './styling/player_factory';
 import {getStylingContext} from './styling/util';
 import {NO_CHANGE} from './tokens';
 import {getComponentViewByIndex, getNativeByIndex, getNativeByTNode, getRootContext, getRootView, getTNode, isComponent, isComponentDef, loadInternal, readElementValue, readPatchedLView, stringify} from './util';
+import { SimpleChanges, SimpleChange } from '../core';
 
 
 
@@ -1024,8 +1025,21 @@ export function createTNode(
  */
 function setInputsForProperty(lView: LView, inputs: PropertyAliasValue, value: any): void {
   for (let i = 0; i < inputs.length; i += 2) {
-    ngDevMode && assertDataInRange(lView, inputs[i] as number);
-    lView[inputs[i] as number][inputs[i + 1]] = value;
+    const directiveIndex = inputs[i] as number;
+    const privateName = inputs[i + 1] as string;
+    ngDevMode && assertDataInRange(lView, directiveIndex);
+
+    let directiveInstance = lView[inputs[i] as number];
+    // If this is an array, then we have onChanges to deal with.
+    if (Array.isArray(directiveInstance)) {
+      const simpleChanges = directiveInstance[1] as SimpleChanges || (directiveInstance[1] = {});
+      directiveInstance = directiveInstance[0];
+      const directiveDef = lView[TVIEW].data[directiveIndex] as DirectiveDef<any>;
+      const publicName = directiveDef.inputs[privateName];
+      const firstChange = !(publicName in simpleChanges);
+      simpleChanges[publicName] = new SimpleChange(directiveInstance[privateName], value, firstChange);
+    }
+    directiveInstance[privateName] = value;
   }
 }
 
@@ -1471,9 +1485,16 @@ function resolveDirectives(
 
       saveNameToExportMap(tView.data !.length - 1, def, exportsMap);
 
+      // If we have an onChanges, we can store the SimpleChanges (null)
+      // in an array next to the directive instance.
+      if (def.onChanges) {
+        const inst = viewData[directiveDefIdx];
+        viewData[directiveDefIdx] = [inst, null];
+      }
+
       // Init hooks are queued now so ngOnInit is called in host components before
       // any projected components.
-      queueInitHooks(directiveDefIdx, def.onInit, def.doCheck, tView);
+      queueInitHooks(directiveDefIdx, def.onChanges, def.onInit, def.doCheck, tView);
     }
   }
   if (exportsMap) cacheMatchingLocalNames(tNode, localRefs, exportsMap);
